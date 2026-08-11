@@ -1,0 +1,19 @@
+Checkpoint 3 - Fix verification (same official workload, incident disabled)
+Server restarted so /metrics counters start from zero.
+
+$ python scripts/inject_incident.py --disable
+200 {'ok': True, 'incidents': {'rag_slow': False, 'tool_fail': False, 'cost_spike': False}}
+
+$ curl http://127.0.0.1:8000/health
+{"ok":true,"tracing_enabled":false,"incidents":{"rag_slow":false,"tool_fail":false,"cost_spike":false}}
+
+$ python scripts/load_test.py --challenge --concurrency 5
+Challenge: day13-k3-observability-v1 | Cohort: K3
+[200] req-6d2f78ff | refund | 1175.0ms
+[200] req-c37705c2 | refund | 1175.1ms
+[200] req-13513669 | refund | 1174.6ms
+[200] req-390067aa | refund | 1174.4ms
+[200] req-b3106f08 | refund | 1176.3ms
+
+$ curl http://127.0.0.1:8000/metrics
+{"traffic":5,"latency_p50":150.0,"latency_p95":151.0,"latency_p99":151.0,"avg_cost_usd":0.002,"total_cost_usd":0.0101,"tokens_in_total":162,"tokens_out_total":644,"error_breakdown":{},"quality_avg":0.86}

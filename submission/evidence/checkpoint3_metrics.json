@@ -1,18 +1,43 @@
 {
   "challenge_id": "day13-k3-observability-v1",
+  "cohort": "K3",
   "incident": "rag_slow",
   "affected_feature": "refund",
   "latency_threshold_ms": 2000,
-  "observed_metrics": {
+  "run_id": "run-C",
+  "run_description": "Authoritative reproduction. Tracing disabled (no Langfuse key on this host), so prompt resolution is local and no network call is inside the measured window.",
+  "transcript": "checkpoint3_challenge_run.txt",
+  "log_excerpt": "checkpoint3_log_excerpt.jsonl",
+  "workload": "python scripts/load_test.py --challenge --concurrency 5",
+  "server_side_metrics": {
     "traffic": 5,
-    "latency_p50": 2650.0,
-    "latency_p95": 2651.0,
-    "latency_p99": 2651.0,
-    "avg_cost_usd": 0.0024,
-    "total_cost_usd": 0.012,
+    "latency_p50": 2651.0,
+    "latency_p95": 2652.0,
+    "latency_p99": 2652.0,
+    "avg_cost_usd": 0.0019,
+    "total_cost_usd": 0.0093,
     "tokens_in_total": 162,
-    "tokens_out_total": 769,
+    "tokens_out_total": 585,
     "error_breakdown": {},
     "quality_avg": 0.86
+  },
+  "client_side_latency_ms": [11027.0, 13679.3, 13679.7, 13679.3, 13678.9],
+  "notes": [
+    "Server-side P95 2652 ms is 652 ms above the released 2000 ms threshold; all 5 official requests breached it.",
+    "Error rate is 0% and quality_avg stays 0.86, so the symptom is isolated latency degradation, not a correctness or availability failure.",
+    "Client-side latency (11.0-13.7 s) is far above server-side latency (2651-2652 ms) because the blocking retrieval serialises the 5 concurrent requests. The gap is queueing time, not request work."
+  ],
+  "fix_verification": {
+    "evidence": "checkpoint3_fix_verification.txt",
+    "server_side_metrics": {
+      "traffic": 5,
+      "latency_p50": 150.0,
+      "latency_p95": 151.0,
+      "latency_p99": 151.0,
+      "error_breakdown": {},
+      "quality_avg": 0.86
+    },
+    "client_side_latency_ms": [1175.0, 1175.1, 1174.6, 1174.4, 1176.3],
+    "result": "Same official workload with rag_slow disabled: P95 2652 ms -> 151 ms (back under the 2000 ms threshold), client-side 13.7 s -> 1.18 s."
   }
 }

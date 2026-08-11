@@ -38,18 +38,25 @@
 
 ## 6. Điều tra challenge
 
-- Challenge ID: `day13-k3-observability-v1`.
+Báo cáo điều tra đầy đủ: [`submission/evidence/checkpoint3_investigation.md`](evidence/checkpoint3_investigation.md).
+
+- Challenge ID: `day13-k3-observability-v1` (cohort K3); `config/challenge.json` không bị sửa.
 - Incident: `rag_slow`, ảnh hưởng feature `refund`.
-- Triệu chứng metrics: batch challenge 5 request có P50 2651 ms và P95 5799 ms, vượt threshold chính thức 2000 ms; error rate 0%, quality average 0.86. Evidence: `submission/evidence/checkpoint3_metrics.png`.
-- Trace liên quan: `167b57a4d303e7c672261d8d77341976`; waterfall cho thấy `run` → `rag_retrieve` → generation, trong đó `rag_retrieve` kéo dài 2.50 giây. Evidence: `submission/evidence/checkpoint3_trace_waterfall.png`.
-- Log/correlation ID liên quan: `req-bb644f78`, có `response_sent.latency_ms: 2651`; evidence: `submission/evidence/checkpoint3_latest_log_excerpt.jsonl`.
-- Root cause: incident chính thức bật `STATE["rag_slow"]`; `app/mock_rag.py` thực thi `time.sleep(2.5)` trong `retrieve()` trước khi trả tài liệu. Thời gian 2.5 giây khớp với span retrieval trên trace và latency trong log.
-- Fix action: disable `rag_slow` sau khi thu evidence; thay retrieval đồng bộ bằng call có timeout/fallback trong môi trường production.
-- Preventive measure: theo dõi latency span retrieval riêng, alert khi request/retrieval P95 vượt SLO và giới hạn thời gian chờ dependency.
+- **Metrics (triệu chứng)**: workload chính thức 5 request/concurrency 5 cho P50 2651 ms, P95 2652 ms — vượt threshold chính thức 2000 ms ở cả 5/5 request; error rate 0% và quality average 0.86 vẫn đạt SLO, nên triệu chứng là latency degradation đơn thuần. Evidence: `submission/evidence/checkpoint3_challenge_run.txt` và `checkpoint3_metrics.json`.
+- **Traces (khoanh vùng)**: trace `167b57a4d303e7c672261d8d77341976`, session `k3-challenge-s01`, user hash `026c7a407135`. Waterfall `run` (2.65 s) → generation → `rag_retrieve` (**2.50 s**), tức 94% latency nằm ở tầng retrieval. Evidence: `submission/evidence/checkpoint3_trace_waterfall.png`.
+- **Logs (chứng minh)**: `req-77b41a40` — cùng `session_id` `k3-challenge-s01`, cùng `user_id_hash` `026c7a407135` và cùng câu hỏi với trace ở trên — ghi `response_sent.latency_ms: 2652`. Evidence: `submission/evidence/checkpoint3_log_excerpt.jsonl` (đủ 10 bản ghi của 5 request).
+- **Root cause**: incident bật `STATE["rag_slow"]`; `retrieve()` trong `app/mock_rag.py` chạy `time.sleep(2.5)` trước khi trả tài liệu. Hằng số 2.5 s trong source khớp span `rag_retrieve` 2.50 s, khớp `latency_ms` 2652 ms và khớp P95 2652 ms.
+- **Yếu tố khuếch đại**: `/chat` là `async def` nhưng gọi `agent.run()` đồng bộ, nên `time.sleep()` chặn event loop và 5 request chạy nối đuôi. Client đo 11.0–13.7 s trong khi server chỉ ghi 2651–2652 ms; phần chênh là queueing time không được `latency_ms` tính vào.
+- **Fix action + xác minh**: disable `rag_slow` rồi chạy lại đúng workload chính thức → P95 2652 ms giảm còn **151 ms**, client-side 13.7 s còn 1.18 s, quality giữ nguyên 0.86. Evidence: `submission/evidence/checkpoint3_fix_verification.txt`. Với hệ thống thật: bỏ lời gọi chặn khỏi đường request, đặt timeout có giới hạn và fallback cho retrieval.
+- **Preventive measures**: alert `High user-facing latency` (P95 > 3000 ms trong 5 phút) trong `config/alert_rules.yaml`; thêm SLI riêng cho latency tầng retrieval; bounded timeout + fallback cho dependency; chuyển lời gọi chặn ra khỏi `async def`; đo latency từ middleware để bao gồm queueing time.
+
+Ghi chú về số liệu: nhóm chạy workload chính thức nhiều lần trên hai máy, P95 lần lượt là 5799 ms, 4279 ms và 2652 ms. Chênh lệch đến từ `resolve_prompt()` gọi `client.get_prompt()` (`fetch_timeout_seconds=2`) *bên trong* cửa sổ đo khi `tracing_enabled=true`. Bảng chỉ mục đầy đủ các run nằm ở mục 0 của `checkpoint3_investigation.md`; run C (P95 2652 ms) là bản tái lập sạch được trích dẫn ở trên.
 
 ### Câu trả lời phản biện
 
-Nhóm khẳng định root cause bằng chuỗi evidence đồng nhất: metrics chỉ ra latency vượt threshold, trace cùng thời điểm khoanh vùng span `rag_retrieve` 2.50 giây, log cùng correlation ID ghi latency cao, và source incident chứng minh `rag_slow` chủ động thêm `time.sleep(2.5)`. Nếu chỉ có metrics, nhóm chỉ biết latency tăng nhưng không xác định được request, correlation ID hay tầng gây chậm; do đó không thể phân biệt RAG, LLM hoặc network để chọn fix có căn cứ.
+Nhóm khẳng định root cause bằng chuỗi evidence khép kín và kiểm chứng được: metrics chỉ ra latency vượt threshold nhưng error rate và quality vẫn đạt (loại bỏ giả thuyết dependency chết và prompt hỏng); trace khoanh vùng 94% latency vào span `rag_retrieve`; log cùng session và cùng user hash với trace ghi `latency_ms` khớp tổng span; source `app/mock_rag.py` cho thấy đúng hằng số 2.5 giây. Cuối cùng, tắt incident và chạy lại cùng workload đưa P95 về 151 ms — chứng minh đây là nguyên nhân duy nhất chứ không phải một trong nhiều nguyên nhân cộng dồn.
+
+Nếu chỉ có metrics, nhóm chỉ biết "chậm" mà không biết chậm ở tầng nào, không phân biệt được RAG, LLM hay network. Nếu chỉ có trace, nhóm biết span nào chậm nhưng không biết sự cố ảnh hưởng bao nhiêu phần trăm request hay có vi phạm SLO không. Log là thứ nối hai lớp đó về một request cụ thể có định danh.
 
 ## 7. Đóng góp cá nhân
 
@@ -65,6 +72,7 @@ Nhóm khẳng định root cause bằng chuỗi evidence đồng nhất: metrics
 - [x] Logging và dashboard validators pass.
 - [x] Prompt baseline/candidate traces, rollout và rollback evidence.
 - [x] Challenge metrics, trace waterfall và correlated log evidence.
+- [x] Transcript challenge chính thức và bằng chứng xác minh fix (before/after).
 - [x] Evidence danh sách prompt versions, rollout và rollback.
 - [ ] Điền tên nhóm, ba thành viên/commit và final commit SHA.
 - [ ] Commit toàn bộ thay đổi hợp lệ; không commit `.env`, `venv/` hoặc log chứa PII.
