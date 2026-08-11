@@ -4,7 +4,7 @@
 
 - Tên nhóm: C61
 - Repository URL: `https://github.com/maniahuv/Day13-K3-Observability.git`
-- Commit SHA cuối: _Điền sau khi commit toàn bộ evidence_
+- Commit SHA cuối: f1c9da10ba94a2397c014a0d2201a017546a3e39
 - Thành viên và vai trò: xem bảng ở mục 7.
 
 ## 2. Kết quả kỹ thuật
@@ -62,9 +62,9 @@ Nếu chỉ có metrics, nhóm chỉ biết "chậm" mà không biết chậm �
 
 | Thành viên | Phần việc | Commit/PR | Điều đã học |
 |---|---|---|---|
-|Vũ Hải Nam| CP1: logging, correlation ID, PII redaction | _Cần điền_ | Structured logging và redaction |
-|Ong Xuân Sơn| CP2: dashboard, SLO, alerts, prompt/version evidence | _Cần điền_ | Metrics, Langfuse prompt labels và rollback |
-|Nguyễn Duy Dũng| CP3: incident investigation, RAG trace span, report | _Cần điền_ | Metrics → traces → logs để xác định root cause |
+|Vũ Hải Nam| CP1: logging, correlation ID, PII redaction | PR #1, PR #3 | Structured logging và redaction |
+|Ong Xuân Sơn| CP2: dashboard, SLO, alerts, prompt/version evidence | PR #2 | Metrics, Langfuse prompt labels và rollback |
+|Nguyễn Duy Dũng| CP3: incident investigation, RAG trace span, report | Commit b074e7a | Metrics → traces → logs để xác định root cause |
 
 ## 8. Checklist trước khi nộp
 
@@ -74,5 +74,5 @@ Nếu chỉ có metrics, nhóm chỉ biết "chậm" mà không biết chậm �
 - [x] Challenge metrics, trace waterfall và correlated log evidence.
 - [x] Transcript challenge chính thức và bằng chứng xác minh fix (before/after).
 - [x] Evidence danh sách prompt versions, rollout và rollback.
-- [ ] Điền tên nhóm, ba thành viên/commit và final commit SHA.
-- [ ] Commit toàn bộ thay đổi hợp lệ; không commit `.env`, `venv/` hoặc log chứa PII.
+- [x] Điền tên nhóm, ba thành viên/commit và final commit SHA.
+- [x] Commit toàn bộ thay đổi hợp lệ; không commit `.env`, `venv/` hoặc log chứa PII.
