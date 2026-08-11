@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 13 AI Observability</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+    }
+    body { margin: 0; padding: 28px; }
+    header { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 20px; }
+    h1 { font-size: 28px; margin: 0 0 6px; }
+    p { margin: 0; color: #526071; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+    .panel { background: #ffffff; border: 1px solid #d9e0ea; border-radius: 8px; padding: 16px; }
+    h2 { font-size: 16px; margin: 0 0 12px; }
+    .metric { border-left: 4px solid #8da2bd; padding: 8px 10px; margin: 8px 0; background: #f8fafc; }
+    .metric span { display: block; color: #526071; font-size: 12px; }
+    .metric strong { display: block; font-size: 24px; margin: 2px 0; }
+    .metric em { display: block; color: #667085; font-style: normal; font-size: 12px; }
+    .ok { border-left-color: #16815d; }
+    .bad { border-left-color: #c0392b; }
+    ul { list-style: none; padding: 0; margin: 10px 0 0; border-top: 1px solid #edf1f7; }
+    li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #edf1f7; }
+    footer { margin-top: 18px; color: #667085; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Day 13 AI Observability</h1>
+      <p>Source: data/logs.jsonl | Time range: 60 minutes | Refresh: 30 seconds</p>
+    </div>
+    <p>Generated: 2026-08-11 10:38:57</p>
+  </header>
+  <main class="grid">
+    <section class='panel'><h2>Latency percentiles</h2><div class='metric neutral'><span>P50</span><strong>150 ms</strong><em></em></div><div class='metric ok'><span>P95</span><strong>150 ms</strong><em>SLO &lt;= 3000 ms</em></div><div class='metric neutral'><span>P99</span><strong>150 ms</strong><em></em></div></section>
+<section class='panel'><h2>Request traffic</h2><div class='metric ok'><span>Peak requests/min</span><strong>10</strong><em>SLO &gt;= 1 req/min</em></div><ul><li><span>03:25</span><b>10</b></li><li><span>03:26</span><b>10</b></li><li><span>03:28</span><b>10</b></li></ul></section>
+<section class='panel'><h2>Error rate and breakdown</h2><div class='metric ok'><span>Error rate</span><strong>0.00%</strong><em>SLO &lt;= 2%</em></div><ul><li><span>No errors</span><b>0</b></li></ul></section>
+<section class='panel'><h2>Cost over time</h2><div class='metric ok'><span>Total cost</span><strong>$0.0619</strong><em>SLO &lt;= $2.5</em></div><ul><li><span>03:25</span><b>$0.0230</b></li><li><span>03:26</span><b>$0.0174</b></li><li><span>03:28</span><b>$0.0215</b></li></ul></section>
+<section class='panel'><h2>Input and output tokens</h2><div class='metric ok'><span>Total tokens</span><strong>4917</strong><em>SLO &lt;= 50000 tokens</em></div><div class='metric neutral'><span>Input tokens</span><strong>990</strong><em></em></div><div class='metric neutral'><span>Output tokens</span><strong>3927</strong><em></em></div></section>
+<section class='panel'><h2>Quality proxy</h2><div class='metric ok'><span>Average quality</span><strong>0.88</strong><em>SLO &gt;= 0.75</em></div></section>
+  </main>
+  <footer>Each panel shows the threshold from config/dashboard.yaml.</footer>
+</body>
+</html>
