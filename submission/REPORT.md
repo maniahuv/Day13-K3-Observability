@@ -3,7 +3,7 @@
 ## 1. Thông tin nhóm
 
 - Tên nhóm: C61
-- Repository URL: `https://github.com/maniahuv/Day13-K3-Observability.git`
+- Repository URL: `https://github.com/maniahuv/Day13-K3-Observability-C61.git`
 - Commit SHA cuối: f1c9da10ba94a2397c014a0d2201a017546a3e39
 - Thành viên và vai trò: xem bảng ở mục 7.
 
