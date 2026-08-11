@@ -1,0 +1,18 @@
+{
+  "challenge_id": "day13-k3-observability-v1",
+  "incident": "rag_slow",
+  "affected_feature": "refund",
+  "latency_threshold_ms": 2000,
+  "observed_metrics": {
+    "traffic": 5,
+    "latency_p50": 2650.0,
+    "latency_p95": 2651.0,
+    "latency_p99": 2651.0,
+    "avg_cost_usd": 0.0024,
+    "total_cost_usd": 0.012,
+    "tokens_in_total": 162,
+    "tokens_out_total": 769,
+    "error_breakdown": {},
+    "quality_avg": 0.86
+  }
+}

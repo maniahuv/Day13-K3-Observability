@@ -1,0 +1,19 @@
+{
+  "challenge_id": "day13-k3-observability-v1",
+  "incident": "rag_slow",
+  "affected_feature": "refund",
+  "latency_threshold_ms": 2000,
+  "observed_metrics": {
+    "traffic": 5,
+    "latency_p50": 2651.0,
+    "latency_p95": 4279.0,
+    "latency_p99": 4279.0,
+    "avg_cost_usd": 0.0021,
+    "total_cost_usd": 0.0106,
+    "tokens_in_total": 212,
+    "tokens_out_total": 663,
+    "error_breakdown": {},
+    "quality_avg": 0.86
+  },
+  "note": "Four requests recorded 2650-2651 ms. The first request recorded 4279 ms because its initial managed-prompt fetch added latency; all five still exceeded the released 2000 ms threshold."
+}

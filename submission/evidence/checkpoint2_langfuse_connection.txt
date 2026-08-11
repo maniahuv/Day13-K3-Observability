@@ -1,0 +1,11 @@
+Langfuse connection check after local .env configuration
+
+GET http://127.0.0.1:8000/health
+{"ok":true,"tracing_enabled":true,"incidents":{"rag_slow":false,"tool_fail":false,"cost_spike":false}}
+
+Workload submitted while tracing was enabled:
+- 10 standard requests from scripts/load_test.py
+- 5 official challenge requests from scripts/load_test.py --challenge --concurrency 5
+
+No credential values are recorded in this evidence file.
+Remote Langfuse UI verification is still required to capture trace IDs, the prompt-version metadata, and rollback screenshots.
