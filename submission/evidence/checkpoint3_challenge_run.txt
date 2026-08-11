@@ -1,0 +1,23 @@
+Checkpoint 3 - Official challenge run transcript
+Repo: Day13-K3-Observability | Challenge: day13-k3-observability-v1 (K3)
+Server: uvicorn app.main:app --env-file .env --port 8000
+
+$ curl http://127.0.0.1:8000/health   # before incident
+{"ok":true,"tracing_enabled":false,"incidents":{"rag_slow":false,"tool_fail":false,"cost_spike":false}}
+
+$ python scripts/inject_incident.py   # reads config/challenge.json, no manual scenario
+200 {'ok': True, 'incidents': {'rag_slow': True, 'tool_fail': False, 'cost_spike': False}}
+
+$ curl http://127.0.0.1:8000/health   # after incident enabled
+{"ok":true,"tracing_enabled":false,"incidents":{"rag_slow":true,"tool_fail":false,"cost_spike":false}}
+
+$ python scripts/load_test.py --challenge --concurrency 5
+Challenge: day13-k3-observability-v1 | Cohort: K3
+[200] req-77b41a40 | refund | 11027.0ms
+[200] req-328efbc9 | refund | 13679.3ms
+[200] req-091a833c | refund | 13679.7ms
+[200] req-8ee43c69 | refund | 13679.3ms
+[200] req-1ba19b73 | refund | 13678.9ms
+
+$ curl http://127.0.0.1:8000/metrics  # server-side metrics after official workload
+{"traffic":5,"latency_p50":2651.0,"latency_p95":2652.0,"latency_p99":2652.0,"avg_cost_usd":0.0019,"total_cost_usd":0.0093,"tokens_in_total":162,"tokens_out_total":585,"error_breakdown":{},"quality_avg":0.86}
