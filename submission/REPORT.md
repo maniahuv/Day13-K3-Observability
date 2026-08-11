@@ -10,14 +10,15 @@
 ## 2. Kết quả kỹ thuật
 
 - Điểm `validate_logs.py` (baseline): 30/100
+- Điểm `validate_logs.py` (checkpoint 1): 100/100 - `submission/evidence/checkpoint1_validate_logs.txt`
 - Tổng số traces:
-- Số PII leak còn lại:
+- Số PII leak còn lại: 0
 - Link/đường dẫn dashboard:
 
 ## 3. Logging và tracing
 
-- Evidence correlation ID:
-- Evidence PII redaction:
+- Evidence correlation ID: `submission/evidence/checkpoint1_log_excerpt.jsonl`
+- Evidence PII redaction: `submission/evidence/checkpoint1_log_excerpt.jsonl`
 - Evidence trace waterfall:
 - Giải thích một span đáng chú ý:
 
