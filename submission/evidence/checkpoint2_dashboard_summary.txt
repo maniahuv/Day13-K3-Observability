@@ -1,0 +1,24 @@
+Source: data/logs.jsonl
+Rendered dashboard: submission/evidence/checkpoint2_dashboard.html
+Dashboard contract: config/dashboard.yaml
+
+Current window summary:
+- Total log records: 61
+- Request records: 30
+- Response records: 30
+- Error records: 0
+- Latency P50/P95/P99: 150 ms / 150 ms / 150 ms
+- Total cost: 0.061875 USD
+- Input tokens: 990
+- Output tokens: 3927
+- Average quality score: 0.88
+
+Visible panels:
+- Latency percentiles
+- Request traffic
+- Error rate and breakdown
+- Cost over time
+- Input and output tokens
+- Quality proxy
+
+Each panel includes the threshold from config/dashboard.yaml.

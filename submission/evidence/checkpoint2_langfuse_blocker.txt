@@ -1,0 +1,25 @@
+Langfuse trace and prompt-version evidence is not complete in this workspace.
+
+Reason:
+- LANGFUSE_PUBLIC_KEY is empty in .env.
+- LANGFUSE_SECRET_KEY is empty in .env.
+- /health reports tracing_enabled=false.
+
+Verification:
+```text
+GET http://127.0.0.1:8000/health
+{"ok":true,"tracing_enabled":false,"incidents":{"rag_slow":false,"tool_fail":false,"cost_spike":false}}
+
+LANGFUSE_PUBLIC_KEY=EMPTY
+LANGFUSE_SECRET_KEY=EMPTY
+LANGFUSE_HOST=SET
+LANGFUSE_PROMPT_NAME=SET
+LANGFUSE_PROMPT_LABEL=SET
+```
+
+Required manual evidence after keys are configured:
+- At least 10 Langfuse traces with metadata.
+- Prompt day13-chat version 1 with labels baseline and production.
+- Prompt day13-chat version 2 with label candidate.
+- Two trace IDs showing prompt_name, prompt_label and prompt_version.
+- Screenshot of production label change or rollback.
